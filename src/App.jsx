@@ -7,7 +7,6 @@ import { Route, Routes } from "react-router-dom";
 
 function App() {
   const [user] = useLocalStorage("user", null);
-  console.log("usersss", user);
   return (
     <div className="container">
       <Routes>

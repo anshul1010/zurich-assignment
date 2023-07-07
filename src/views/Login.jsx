@@ -12,7 +12,6 @@ export default function Login() {
     return <Navigate to="/home" replace />;
   }
   const onSuccess = (res) => {
-    console.log("Login Success: currentUser:", res);
     setUser(res);
     navigate("/home");
   };
@@ -20,10 +19,6 @@ export default function Login() {
   const onFailure = (res) => {
     console.log("Login failed: res:", res);
   };
-  useEffect(() => {
-    // Run as soon as page loads
-    console.log("page loaded");
-  });
 
   return (
     <div className="bg-white mx-auto max-w-sm shadow-lg rounded-lg overflow-hidden my-10 h-screen">

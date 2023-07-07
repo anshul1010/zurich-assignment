@@ -7,12 +7,8 @@ export default function BaseTable({ columns, data }) {
     getTableProps,
     getTableBodyProps,
     headerGroups,
-
     prepareRow,
     page, // Instead of using 'rows', we'll use page,
-    // which has only the rows for the active page
-
-    // The rest of these things are super handy, too ;)
     canPreviousPage,
     canNextPage,
     pageOptions,
@@ -57,12 +53,13 @@ export default function BaseTable({ columns, data }) {
               className="min-w-full divide-y divide-gray-200"
             >
               <thead className="bg-gray-10">
-                {headerGroups?.map((headerGroup) => (
-                  <tr {...headerGroup.getHeaderGroupProps()}>
-                    {headerGroup.headers?.map((column) => (
+                {headerGroups?.map((headerGroup, rowIndex) => (
+                  <tr {...headerGroup.getHeaderGroupProps()} key={rowIndex}>
+                    {headerGroup.headers?.map((column, colIndex) => (
                       <th
                         {...column.getHeaderProps()}
                         className="px-6 py-5 text-left text-20 font-medium text-gray-400 uppercase rounded-sm tracking-wider"
+                        key={colIndex}
                       >
                         {column.render("Header")}
                       </th>
@@ -74,15 +71,16 @@ export default function BaseTable({ columns, data }) {
                 {...getTableBodyProps()}
                 className="bg-white divide-y divide-gray-200"
               >
-                {page?.map((row, i) => {
+                {page?.map((row, rowI) => {
                   prepareRow(row);
                   return (
-                    <tr {...row?.getRowProps()}>
-                      {row?.cells.map((cell) => {
+                    <tr {...row?.getRowProps()} key={rowI}>
+                      {row?.cells.map((cell, colJ) => {
                         return (
                           <td
                             {...cell.getCellProps()}
                             className="px-6 py-10 whitespace-nowrap"
+                            key={colJ}
                           >
                             {cell.render("Cell")}
                           </td>
@@ -95,10 +93,10 @@ export default function BaseTable({ columns, data }) {
             </table>
             <div className="py-3 flex items-center text-center justify-center pt-10">
               <nav aria-label="Page navigation example">
-                <ul class="list-style-none flex">
+                <ul className="list-style-none flex">
                   <li>
                     <a
-                      class="relative block cursor-pointer rounded bg-transparent px-3 py-1.5 text-sm text-neutral-600 transition-all duration-300 hover:bg-neutral-100 dark:text-white dark:hover:bg-neutral-700 dark:hover:text-white"
+                      className="relative block cursor-pointer rounded bg-transparent px-3 py-1.5 text-sm text-neutral-600 transition-all duration-300 hover:bg-neutral-100 dark:text-white dark:hover:bg-neutral-700 dark:hover:text-white"
                       onClick={() => previousPage()}
                       disabled={!canPreviousPage}
                     >
@@ -112,9 +110,9 @@ export default function BaseTable({ columns, data }) {
 
                     if (pageNumber - 1 === pageIndex) {
                       return (
-                        <li>
+                        <li key={index}>
                           <a
-                            className="relative bg-warning-100 text-warning-700 cursor-pointer block rounded bg-transparent px-3 py-1.5 text-sm text-neutral-600 transition-all duration-300 hover:bg-neutral-100 dark:text-white dark:hover:bg-neutral-700 dark:hover:text-white"
+                            className="relative cursor-pointer block rounded bg-transparent px-3 py-1.5 text-sm text-neutral-600 transition-all duration-300 hover:bg-neutral-100 dark:text-white dark:hover:bg-neutral-700 dark:hover:text-white"
                             key={index}
                             onClick={() => gotoPage(pageNumber - 1)}
                           >
@@ -125,9 +123,9 @@ export default function BaseTable({ columns, data }) {
                     }
 
                     return (
-                      <li>
+                      <li key={index}>
                         <a
-                          className="relative bg-warning-100 text-warning-700 cursor-pointer block rounded bg-transparent px-3 py-1.5 text-sm text-neutral-600 transition-all duration-300 hover:bg-neutral-100 dark:text-white dark:hover:bg-neutral-700 dark:hover:text-white"
+                          className="relative cursor-pointer block rounded bg-transparent px-3 py-1.5 text-sm text-neutral-600 transition-all duration-300 hover:bg-neutral-100 dark:text-white dark:hover:bg-neutral-700 dark:hover:text-white"
                           key={index}
                           onClick={() => gotoPage(pageNumber - 1)}
                         >
@@ -139,7 +137,7 @@ export default function BaseTable({ columns, data }) {
 
                   <li>
                     <a
-                      class="relative cursor-pointer block rounded bg-transparent px-3 py-1.5 text-sm text-neutral-600 transition-all duration-300 hover:bg-neutral-100 dark:text-white dark:hover:bg-neutral-700 dark:hover:text-white"
+                      className="relative cursor-pointer block rounded bg-transparent px-3 py-1.5 text-sm text-neutral-600 transition-all duration-300 hover:bg-neutral-100 dark:text-white dark:hover:bg-neutral-700 dark:hover:text-white"
                       onClick={() => nextPage()}
                       disabled={!canNextPage}
                     >
@@ -149,56 +147,6 @@ export default function BaseTable({ columns, data }) {
                 </ul>
               </nav>
             </div>
-            {/* <div className="py-3 flex items-center text-center justify-center pt-10">
-              <div className="flex-1 flex justify-between md:hidden">
-                <button
-                  onClick={() => previousPage()}
-                  disabled={!canPreviousPage}
-                >
-                  Previous
-                </button>
-                <button onClick={() => nextPage()} disabled={!canNextPage}>
-                  Next
-                </button>
-              </div>
-              <div
-                className="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between"
-                aria-label="Pagination"
-              >
-                <div
-                  className="relative z-0 inline-flex items-center ml-auto mr-auto rounded-md shadow-sm space-x-10"
-                  aria-label="Pagination"
-                >
-                  {paginationRange?.map((pageNumber, index) => {
-                    if (pageNumber === DOTS) {
-                      return <div key={index}>...</div>;
-                    }
-
-                    if (pageNumber - 1 === pageIndex) {
-                      return (
-                        <div
-                          key={index}
-                          className=" active:bg-gray-500 active:border-gray-300"
-                          onClick={() => gotoPage(pageNumber - 1)}
-                        >
-                          {pageNumber}
-                        </div>
-                      );
-                    }
-
-                    return (
-                      <div
-                        key={index}
-                        className="active:bg-gray-500 active:border-gray-300"
-                        onClick={() => gotoPage(pageNumber - 1)}
-                      >
-                        {pageNumber}
-                      </div>
-                    );
-                  })}
-                </div>
-              </div>
-            </div> */}
           </div>
         </div>
       </div>

@@ -1,10 +1,5 @@
-import {
-  GET_USER_LIST,
-  GET_USER_SUCCESS,
-  GET_USER_FAILURE,
-} from "./actionTypes";
+import { GET_USER_LIST } from "./actionTypes";
 const initialState = {
-  loading: false,
   lists: [],
   error: "",
 };
